@@ -15,8 +15,6 @@ cp .env.example .env.development
 ```bash
 PORT=4000
 NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/your-db
-JWT_SECRET=your-dev-secret
 CORS_ORIGIN=http://localhost:3000
 ```
 
@@ -33,8 +31,6 @@ npm run dev
 Add these as environment variables in AWS CodeBuild:
 - `PORT` = `4000`
 - `NODE_ENV` = `production`
-- `MONGODB_URI` = your production database URI
-- `JWT_SECRET` = strong random string (32+ chars)
 - `CORS_ORIGIN` = `http://54.84.37.142`
 
 See `../AWS_CODEBUILD_ENV_SETUP.md` for detailed instructions.
@@ -44,9 +40,8 @@ See `../AWS_CODEBUILD_ENV_SETUP.md` for detailed instructions.
 ## API Endpoints
 
 - **GET** `/api/health` - Check backend status
-- **GET** `/api/users` - Get list of users
+- **GET** `/api/users` - Get list of users (static data)
 - **POST** `/api/login` - Login with credentials
-- **GET** `/api/env` - Show environment info (debug only)
 
 ## Test Credentials
 
@@ -58,7 +53,7 @@ See `../AWS_CODEBUILD_ENV_SETUP.md` for detailed instructions.
 ## Files Explained
 
 - `index.js` - Main server file
-- `package.json` - Dependencies
+- `package.json` - Dependencies (express, cors, dotenv)
 - `appspec.yml` - AWS CodeDeploy configuration
 - `buildspec.yml` - AWS CodeBuild configuration
 - `scripts/install.sh` - Deployment script
@@ -69,49 +64,12 @@ See `../AWS_CODEBUILD_ENV_SETUP.md` for detailed instructions.
 
 ---
 
+## No Database Required
+
+This project uses **in-memory static data** — no MongoDB, MySQL, or any database is needed. Users and login credentials are hardcoded directly in `index.js`.
+
+---
+
 ## EC2 Deployment Path
 
 `/var/www/backend`
-
----
-
-## Deployment Flow
-
-1. Push to GitHub
-2. CodePipeline triggers
-3. CodeBuild creates `.env` from environment variables
-4. CodeBuild runs `npm install`
-5. CodeDeploy copies to `/var/www/backend`
-6. `install.sh` runs `pm2 restart backend`
-7. Backend is live!
-
----
-
-## Troubleshooting
-
-**Environment variables not loading:**
-```bash
-# Check if dotenv is installed
-npm list dotenv
-
-# Verify .env file exists
-ls -la .env*
-
-# Check PM2 logs
-pm2 logs backend
-```
-
-**Cannot connect to database:**
-```bash
-# Test MongoDB connection
-mongosh "your-mongodb-uri"
-
-# Check environment variable
-echo $MONGODB_URI
-```
-
-**CORS errors:**
-```bash
-# Check CORS_ORIGIN matches frontend URL
-curl http://localhost:4000/api/env
-```

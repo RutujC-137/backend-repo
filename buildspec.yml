@@ -1,26 +1,27 @@
 version: 0.2
+
+# ─── HOW THIS WORKS ─────────────────────────────────────────
+# Backend env files (.env.dev / .env.qa / .env.preprod / .env.prod)
+# are committed to the repo and shipped to EC2 as-is.
+# The correct one is loaded at RUNTIME by index.js based on NODE_ENV.
+# NODE_ENV is set inside ecosystem.config.js on each EC2.
+# CodeBuild does NOT need to inject env vars for backend.
+# ────────────────────────────────────────────────────────────
+
 phases:
   install:
     runtime-versions:
       nodejs: 18
   pre_build:
     commands:
-      - echo Installing dependencies...
+      - echo Installing backend dependencies...
       - npm install
-      - echo "Creating .env file from AWS environment variables..."
-      # Create .env file dynamically from CodeBuild environment variables
-      - |
-        cat > .env << EOF
-        PORT=${PORT:-4000}
-        NODE_ENV=${NODE_ENV:-production}
-        MONGODB_URI=${MONGODB_URI}
-        JWT_SECRET=${JWT_SECRET}
-        CORS_ORIGIN=${CORS_ORIGIN}
-        EOF
-      - echo ".env file created successfully"
   build:
     commands:
-      - echo Build completed
+      - echo Backend build complete - no compile step needed for Node.js
+
 artifacts:
   files:
     - '**/*'
+  exclude-paths:
+    - node_modules/**
