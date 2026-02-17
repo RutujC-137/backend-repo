@@ -1,5 +1,6 @@
 version: 0.2
 
+<<<<<<< HEAD
 # ─────────────────────────────────────────────────────────────
 # BACKEND — Single buildspec.yml for ALL 4 environments
 #
@@ -21,11 +22,21 @@ version: 0.2
 #   - index.js reads NODE_ENV and loads .env.{NODE_ENV}.
 #   - CodeBuild only runs npm install — no build step needed.
 # ─────────────────────────────────────────────────────────────
+=======
+# ─── HOW THIS WORKS ─────────────────────────────────────────
+# Backend env files (.env.dev / .env.qa / .env.preprod / .env.prod)
+# are committed to the repo and shipped to EC2 as-is.
+# The correct one is loaded at RUNTIME by index.js based on NODE_ENV.
+# NODE_ENV is set inside ecosystem.config.js on each EC2.
+# CodeBuild does NOT need to inject env vars for backend.
+# ────────────────────────────────────────────────────────────
+>>>>>>> 3602d893c8c41293df9556ab829a2f773d0657d8
 
 phases:
   install:
     runtime-versions:
       nodejs: 18
+<<<<<<< HEAD
 
   pre_build:
     commands:
@@ -38,6 +49,15 @@ phases:
       - echo "Backend build complete."
       - echo "No compile step needed for Node.js."
       - echo "Env files .env.dev/.env.qa/.env.preprod/.env.prod will be loaded at runtime on EC2."
+=======
+  pre_build:
+    commands:
+      - echo Installing backend dependencies...
+      - npm install
+  build:
+    commands:
+      - echo Backend build complete - no compile step needed for Node.js
+>>>>>>> 3602d893c8c41293df9556ab829a2f773d0657d8
 
 artifacts:
   files:
