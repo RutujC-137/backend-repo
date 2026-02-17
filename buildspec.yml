@@ -1,0 +1,26 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+  pre_build:
+    commands:
+      - echo Installing dependencies...
+      - npm install
+      - echo "Creating .env file from AWS environment variables..."
+      # Create .env file dynamically from CodeBuild environment variables
+      - |
+        cat > .env << EOF
+        PORT=${PORT:-4000}
+        NODE_ENV=${NODE_ENV:-production}
+        MONGODB_URI=${MONGODB_URI}
+        JWT_SECRET=${JWT_SECRET}
+        CORS_ORIGIN=${CORS_ORIGIN}
+        EOF
+      - echo ".env file created successfully"
+  build:
+    commands:
+      - echo Build completed
+artifacts:
+  files:
+    - '**/*'
