@@ -1,66 +1,20 @@
-version: 0.2
-
-<<<<<<< HEAD
-# ─────────────────────────────────────────────────────────────
-# BACKEND — Single buildspec.yml for ALL 4 environments
-#
-# This file is used by ALL backend CodeBuild projects:
-#   backend-dev-build     → APP_ENV=dev
-#   backend-qa-build      → APP_ENV=qa
-#   backend-preprod-build → APP_ENV=preprod
-#   backend-prod-build    → APP_ENV=prod
-#
-# In each CodeBuild project, set ONE environment variable:
-#   Name  : APP_ENV
-#   Value : dev   (or qa / preprod / prod)
-#
-# IMPORTANT — Backend env loading works differently from React:
-#   - The .env.dev / .env.qa / .env.preprod / .env.prod files
-#     are committed to the repo and shipped to EC2 by CodeDeploy.
-#   - The correct file is loaded at RUNTIME (not build time).
-#   - ecosystem.config.js on each EC2 sets NODE_ENV.
-#   - index.js reads NODE_ENV and loads .env.{NODE_ENV}.
-#   - CodeBuild only runs npm install — no build step needed.
-# ─────────────────────────────────────────────────────────────
-=======
-# ─── HOW THIS WORKS ─────────────────────────────────────────
-# Backend env files (.env.dev / .env.qa / .env.preprod / .env.prod)
-# are committed to the repo and shipped to EC2 as-is.
-# The correct one is loaded at RUNTIME by index.js based on NODE_ENV.
-# NODE_ENV is set inside ecosystem.config.js on each EC2.
-# CodeBuild does NOT need to inject env vars for backend.
-# ────────────────────────────────────────────────────────────
->>>>>>> 3602d893c8c41293df9556ab829a2f773d0657d8
-
+version: 0.0
 phases:
   install:
     runtime-versions:
       nodejs: 18
-<<<<<<< HEAD
-
-  pre_build:
     commands:
-      - echo "APP_ENV is set to -- $APP_ENV --"
-      - echo "Installing backend dependencies..."
-      - npm install
-
+      - echo "Installing"
+  pre_build: 
+    commands:
+      - echo Installing source NPM dependencies...
+      - npm install -f
   build:
     commands:
-      - echo "Backend build complete."
-      - echo "No compile step needed for Node.js."
-      - echo "Env files .env.dev/.env.qa/.env.preprod/.env.prod will be loaded at runtime on EC2."
-=======
-  pre_build:
+      - echo Build started on `date`
+      - cd ${PATH}
+      - echo Compiling the Node.js code
+      - npm run build:dev
+  post_build:
     commands:
-      - echo Installing backend dependencies...
-      - npm install
-  build:
-    commands:
-      - echo Backend build complete - no compile step needed for Node.js
->>>>>>> 3602d893c8c41293df9556ab829a2f773d0657d8
-
-artifacts:
-  files:
-    - '**/*'
-  exclude-paths:
-    - node_modules/**
+      - echo build Completed on `date`
