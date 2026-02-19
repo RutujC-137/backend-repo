@@ -4,4 +4,5 @@ echo "Installing dependencies"
 
 cd /var/www/backend
 
-npm install 
+# Ensure npm install succeeds before proceeding
+npm install || { echo "npm install failed"; exit 1; }
