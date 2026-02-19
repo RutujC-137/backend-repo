@@ -12,9 +12,10 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - cd ${PATH}
-      - echo Compiling the Node.js code
-      - npm run build:dev
+      - echo "No build required for this project"
   post_build:
     commands:
       - echo build Completed on `date`
+artifacts:
+  files:
+    - '**/*'
