@@ -15,10 +15,22 @@ const corsOptions = {
   credentials: true
 };
 
+// ─── Middleware ───────────────────────────────────────────
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// Log all requests to help with debugging
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
+
 // ─── Routes ────────────────────────────────────────────────
+
+// Base API route
+app.get('/api', (req, res) => {
+  res.json({ message: "Welcome to the API! Use /api/health to check status." });
+});
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -33,8 +45,8 @@ app.get('/api/health', (req, res) => {
 // Static users list (no database needed)
 app.get('/api/users', (req, res) => {
   res.json([
-    { id: 1, name: 'John Doe',    role: 'Admin'   },
-    { id: 2, name: 'Jane Smith',  role: 'User'    },
+    { id: 1, name: 'John Doe', role: 'Admin' },
+    { id: 2, name: 'Jane Smith', role: 'User' },
     { id: 3, name: 'Bob Johnson', role: 'Manager' }
   ]);
 });
