@@ -12,11 +12,7 @@ hooks:
       timeout: 300
       runas: root
 
-   BeforeInstall:
-    - location: Before_Install.sh
-      timeout: 300
-      runas: root 
-
+   
   AfterInstall:
     - location: Application_Install.sh
       timeout: 300
