@@ -8,21 +8,21 @@ files:
 
 hooks:
   ApplicationStop:
-    - location: stop.sh
+    - location: Application_Stop.sh
       timeout: 300
       runas: root
 
-  BeforeInstall:
-    - location: before_install.sh
+   BeforeInstall:
+    - location: Before_Install.sh
       timeout: 300
-      runas: root
+      runas: root 
 
   AfterInstall:
-    - location: install.sh
+    - location: Application_Install.sh
       timeout: 300
       runas: root
 
   ApplicationStart:
-    - location: start.sh
+    - location: Application_Start.sh
       timeout: 300
       runas: root
